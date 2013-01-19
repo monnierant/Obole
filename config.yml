@@ -1,0 +1,14 @@
+database:
+  hostname: localhost
+  database_name: my_database
+  username: username
+  password: abc123
+  port: 3306
+settings:
+  checkdelay: 30
+  checkExpiredDelay: 2
+  sandbox: false
+  debug: false
+  cumulativepackages: true
+  enablesignwall: false
+  broadcast-message: '&aPlease thank %player for donating %amount!'
