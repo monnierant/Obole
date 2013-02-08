@@ -1,6 +1,6 @@
 name: Obole
 main: me.monnierant.obole.Obole
-version: 1.7
+version: 1.8
 description: Gestion d'un system de don.
 author: Monnier Antoine
 commands:

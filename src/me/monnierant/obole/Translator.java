@@ -145,7 +145,7 @@ public class Translator
 			m_texts.get(7).add("§6Expires On: §7");
 			m_texts.add(new ArrayList<String>());
 			m_texts.get(8).add("§6Thank's a lot for your help");
-			m_texts.get(8).add("§6Well try young padawan");
+			m_texts.get(8).add("§6Well tried young padawan");
 			m_texts.get(8).add("§8%player §7try to cheat the gift");
 			m_texts.add(new ArrayList<String>());
 			m_texts.get(9).add("§8-------------- §6Obole §8- §aPlayer ");

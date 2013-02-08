@@ -50,32 +50,35 @@ public class DonateEventListener implements Listener
 
 		try
 		{
-			while (r.next())
+			if (r != null)
 			{
-				for (String pack : plugin.getConfig().getConfigurationSection("packages").getKeys(false))
+				while (r.next())
 				{
-					String price = plugin.getConfig().getString("packages." + pack + ".price");
-					List<String> commands = plugin.getConfig().getStringList("packages." + pack + ".commands");
-					if (!plugin.getConfig().getBoolean("settings.cumulativepackages"))
+					for (String pack : plugin.getConfig().getConfigurationSection("packages").getKeys(false))
 					{
-						if (amount.equals(price) || (amount + "0").equals(price))
+						String price = plugin.getConfig().getString("packages." + pack + ".price");
+						List<String> commands = plugin.getConfig().getStringList("packages." + pack + ".commands");
+						if (!plugin.getConfig().getBoolean("settings.cumulativepackages"))
 						{
-							r.updateString("expires", plugin.getExpiresDate(pack));
-							for (String cmnd : commands)
+							if (amount.equals(price) || (amount + "0").equals(price))
 							{
-								plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), cmnd.replace("%player", user).replace("%amount", plugin.parseAmount(amount)));
+								r.updateString("expires", plugin.getExpiresDate(pack));
+								for (String cmnd : commands)
+								{
+									plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), cmnd.replace("%player", user).replace("%amount", plugin.parseAmount(amount)));
+								}
 							}
 						}
-					}
-					else
-					{
-						Double total = plugin.getTotalDonated(r.getString("username")) + amount;
-						if (total.equals(price) || (total + "0").equals(price))
+						else
 						{
-							r.updateString("expires", plugin.getExpiresDate(pack));
-							for (String cmnd : commands)
+							Double total = plugin.getTotalDonated(r.getString("username")) + amount;
+							if (total.equals(price) || (total + "0").equals(price))
 							{
-								plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), cmnd.replace("%player", user).replace("%amount", plugin.parseAmount(amount)));
+								r.updateString("expires", plugin.getExpiresDate(pack));
+								for (String cmnd : commands)
+								{
+									plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), cmnd.replace("%player", user).replace("%amount", plugin.parseAmount(amount)));
+								}
 							}
 						}
 					}

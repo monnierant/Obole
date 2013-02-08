@@ -17,7 +17,6 @@ import java.util.List;
 
 import me.monnierant.obole.Tracer.eNiveau;
 
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
@@ -48,15 +47,18 @@ public class Obole extends JavaPlugin
 		ResultSet r = getResultSet("SELECT * FROM donations WHERE username = '" + user + "' AND canGet = 1 AND expired='false'");
 		try
 		{
-			if (r.next())
+			if (r != null)
 			{
-				if (r.getInt("canGet") > 0)
+				if (r.next())
 				{
-					return true;
-				}
-				else
-				{
-					return false;
+					if (r.getInt("canGet") > 0)
+					{
+						return true;
+					}
+					else
+					{
+						return false;
+					}
 				}
 			}
 		}
@@ -176,15 +178,18 @@ public class Obole extends JavaPlugin
 			// Check for and process new donations.
 			try
 			{
-				while (r.next())
+				if (r != null)
 				{
-					String user = r.getString("username");
-					Double amount = r.getDouble("amount");
-					DonateEvent event = new DonateEvent(r.getString("username"), r.getDouble("amount"), r.getString("date"), r.getString("first_name"), r.getString("last_name"), r.getString("payer_email"), r.getString("expires"));
-					getServer().getPluginManager().callEvent(event);
-					r.updateString("processed", "true");
-					r.updateRow();
-					updateDonorPlayers(user, getTotalDonated(user) + amount);
+					while (r.next())
+					{
+						String user = r.getString("username");
+						Double amount = r.getDouble("amount");
+						DonateEvent event = new DonateEvent(r.getString("username"), r.getDouble("amount"), r.getString("date"), r.getString("first_name"), r.getString("last_name"), r.getString("payer_email"), r.getString("expires"));
+						getServer().getPluginManager().callEvent(event);
+						r.updateString("processed", "true");
+						r.updateRow();
+						updateDonorPlayers(user, getTotalDonated(user) + amount);
+					}
 				}
 			}
 			catch (Exception e)
@@ -428,9 +433,12 @@ public class Obole extends JavaPlugin
 		Integer donationcount = 0;
 		try
 		{
-			while (r.next())
+			if (r != null)
 			{
-				donationcount++;
+				while (r.next())
+				{
+					donationcount++;
+				}
 			}
 		}
 		catch (SQLException e)
@@ -477,9 +485,12 @@ public class Obole extends JavaPlugin
 		Double am = null;
 		try
 		{
-			while (r.next())
+			if (r != null)
 			{
-				am = r.getDouble("amount");
+				while (r.next())
+				{
+					am = r.getDouble("amount");
+				}
 			}
 		}
 		catch (SQLException e)
@@ -614,9 +625,12 @@ public class Obole extends JavaPlugin
 						ResultSet r = getRecentDonors();
 						try
 						{
-							while (r.next())
+							if (r != null)
 							{
-								formatRecentQuick(cs, r.getString("id"), r.getString("date"), r.getString("username"), r.getString("amount"), getTotalDonated(r.getString("username")) + "");
+								while (r.next())
+								{
+									formatRecentQuick(cs, r.getString("id"), r.getString("date"), r.getString("username"), r.getString("amount"), getTotalDonated(r.getString("username")) + "");
+								}
 							}
 						}
 						catch (SQLException e)
@@ -701,15 +715,19 @@ public class Obole extends JavaPlugin
 						cs.sendMessage("§8-------------- §6Donator §8- §aDonation # " + strings[1] + " §8--------------");
 						try
 						{
-							while (r.next())
+							if (r != null)
 							{
-								cs.sendMessage(m_translator.get("check", 0) + r.getString("username"));
-								cs.sendMessage(m_translator.get("check", 1) + r.getString("amount"));
-								cs.sendMessage(m_translator.get("check", 2) + r.getString("date").substring(9, r.getString("date").length()).substring(0, 12));
-								cs.sendMessage(m_translator.get("check", 3) + r.getString("first_name") + " " + r.getString("last_name"));
-								cs.sendMessage(m_translator.get("check", 4) + r.getString("payer_email"));
-								cs.sendMessage(m_translator.get("check", 5) + r.getString("expired").replace("false", m_translator.get("common", 2)).replace("true", m_translator.get("common", 3)));
-								cs.sendMessage(m_translator.get("check", 6) + r.getString("expires").replace("null", m_translator.get("common", 4)));
+
+								while (r.next())
+								{
+									cs.sendMessage(m_translator.get("check", 0) + r.getString("username"));
+									cs.sendMessage(m_translator.get("check", 1) + r.getString("amount"));
+									cs.sendMessage(m_translator.get("check", 2) + r.getString("date").substring(9, r.getString("date").length()).substring(0, 12));
+									cs.sendMessage(m_translator.get("check", 3) + r.getString("first_name") + " " + r.getString("last_name"));
+									cs.sendMessage(m_translator.get("check", 4) + r.getString("payer_email"));
+									cs.sendMessage(m_translator.get("check", 5) + r.getString("expired").replace("false", m_translator.get("common", 2)).replace("true", m_translator.get("common", 3)));
+									cs.sendMessage(m_translator.get("check", 6) + r.getString("expires").replace("null", m_translator.get("common", 4)));
+								}
 							}
 						}
 						catch (SQLException e)
@@ -753,9 +771,12 @@ public class Obole extends JavaPlugin
 						ResultSet r = getResultSet("SELECT * FROM donations WHERE username='" + strings[1] + "' ORDER BY id DESC LIMIT 5");
 						try
 						{
-							while (r.next())
+							if (r != null)
 							{
-								formatRecentByPlayer(cs, r.getString("id"), r.getString("date"), r.getString("amount"));
+								while (r.next())
+								{
+									formatRecentByPlayer(cs, r.getString("id"), r.getString("date"), r.getString("amount"));
+								}
 							}
 						}
 						catch (SQLException e)
@@ -926,10 +947,10 @@ public class Obole extends JavaPlugin
 
 	public void updateSignWall(String use, Double amount)
 	{
-		Location loc1 = new Location(getServer().getWorld(getConfig().getString("signwall.1.w")), getConfig().getInt("signwall.1.x"), getConfig().getInt("signwall.1.y"), getConfig().getInt("signwall.1.z"));
-		Location loc2 = new Location(getServer().getWorld(getConfig().getString("signwall.2.w")), getConfig().getInt("signwall.2.x"), getConfig().getInt("signwall.2.y"), getConfig().getInt("signwall.2.z"));
-		Integer x1 = loc1.getBlockX(), y1 = loc1.getBlockY(), z1 = loc1.getBlockZ();
-		Integer x2 = loc2.getBlockX(), y2 = loc2.getBlockY(), z2 = loc2.getBlockZ();
+		//Location loc1 = new Location(getServer().getWorld(getConfig().getString("signwall.1.w")), , getConfig().getInt("signwall.1.y"), getConfig().getInt("signwall.1.z"));
+		//Location loc2 = new Location(getServer().getWorld(getConfig().getString("signwall.2.w")), getConfig().getInt("signwall.2.x"), getConfig().getInt("signwall.2.y"), getConfig().getInt("signwall.2.z"));
+		Integer x1 = getConfig().getInt("signwall.1.x"), y1 = getConfig().getInt("signwall.1.y"), z1 = getConfig().getInt("signwall.1.z");
+		Integer x2 = getConfig().getInt("signwall.2.x"), y2 = getConfig().getInt("signwall.2.y"), z2 = getConfig().getInt("signwall.2.z");
 		Integer minx = Math.min(x1, x2);
 		Integer minz = Math.min(z1, z2);
 		Integer miny = Math.min(y1, y2);
